@@ -1,29 +1,48 @@
 import json
 import time
+import os
+
+INPUT_FILE = "counts.json"
 
 def get_signal(count):
     if count > 15:
-        return "🔴 RED"
+        return "🔴 RED  (Overcrowded)"
     elif 10 <= count <= 14:
-        return "🔵 BLUE"
+        return "🔵 BLUE (Moderate)"
     else:
-        return "🟢 GREEN"
+        return "🟢 GREEN (Safe)"
 
-def indicate_signals():
+def clear_console():
+    os.system("cls" if os.name == "nt" else "clear")
+
+def show_dashboard():
     while True:
-        try:
-            with open("counts.json", "r") as f:
-                camera_people_count = json.load(f)
+        clear_console()
+        print("🚇 METRO COMPARTMENT CROWD DASHBOARD")
+        print("=" * 45)
 
-            print("\n--- SIGNAL STATUS ---")
-            for cam, count in camera_people_count.items():
+        try:
+            with open(INPUT_FILE, "r") as f:
+                data = json.load(f)
+
+            for cam, info in data.items():
+                count = info["count"]
+                time_stamp = info["timestamp"]
                 signal = get_signal(count)
-                print(f"{cam}: People = {count} → Signal = {signal}")
+
+                print(f"""
+📍 {cam}
+   👥 People : {count}
+   🚦 Signal : {signal}
+   ⏱️ Updated: {time_stamp}
+----------------------------------------
+""")
 
         except FileNotFoundError:
-            print("Waiting for counts.json...")
+            print("⏳ Waiting for people count data...")
 
-        time.sleep(2)  # repeat every 20 seconds
+        time.sleep(3)  # dashboard refresh rate
+
 
 if __name__ == "__main__":
-    indicate_signals()
+    show_dashboard()
