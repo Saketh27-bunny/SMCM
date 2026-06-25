@@ -1,14 +1,14 @@
 {
     "Compartment-1": {
-        "count": 6,
-        "timestamp": "19:33:17"
+        "count": 3,
+        "timestamp": "21:23:56"
     },
     "Compartment-2": {
         "count": 9,
-        "timestamp": "19:33:18"
+        "timestamp": "21:23:56"
     },
     "Compartment-3": {
-        "count": 7,
-        "timestamp": "19:33:17"
+        "count": 9,
+        "timestamp": "21:23:56"
     }
 }

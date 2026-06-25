@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMCM - Smart Metro Crowd Management</title>
+    <!-- Modern Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+
+    <!-- App Shell Layout -->
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <i class="fa-solid fa-train-subway logo-icon"></i>
+                <div class="logo-text">
+                    <h2>SMCM</h2>
+                    <span>Hyderabad Metro</span>
+                </div>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#" class="nav-item active" data-target="home-section">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard Home</span>
+                </a>
+                <a href="#" class="nav-item" data-target="crowd-section">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                    <span>Crowd Live CCTV</span>
+                </a>
+                <a href="#" class="nav-item" data-target="tracking-section">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Route Live Tracker</span>
+                </a>
+                <a href="#" class="nav-item" data-target="booking-section">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>Book Ticket & Gate</span>
+                </a>
+            </nav>
+            
+            <!-- Global User Profile Info / Login State -->
+            <div class="user-status-card">
+                <div class="status-avatar">
+                    <i class="fa-solid fa-circle-user"></i>
+                </div>
+                <div class="status-info">
+                    <h4 id="sidebar-username">Guest Passenger</h4>
+                    <span id="sidebar-role" class="badge badge-guest">Offline</span>
+                </div>
+                <button id="logout-btn" class="logout-icon-btn" title="Logout" style="display:none;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1 id="page-heading">Dashboard Home</h1>
+                    <p id="page-subheading">Overview and Smart Analytics</p>
+                </div>
+                <div class="header-actions">
+                    <!-- AI Settings Toggler -->
+                    <button class="header-btn" id="open-settings" title="Settings">
+                        <i class="fa-solid fa-sliders"></i>
+                    </button>
+                    <!-- Global Live Clock -->
+                    <div class="time-widget">
+                        <i class="fa-regular fa-clock"></i>
+                        <span id="current-time">19:10:04</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- SECTION 1: HOME PAGE -->
+            <section id="home-section" class="content-section active">
+                <div class="hero-banner">
+                    <div class="hero-content">
+                        <h1>Smart Crowd Management</h1>
+                        <p>Real-time occupancy monitoring, AI routing assistance, and contactless ticketing system. Powered by YOLOv8 deep learning.</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" onclick="switchTab('crowd-section')">
+                                <i class="fa-solid fa-video"></i> View Live Feeds
+                            </button>
+                            <button class="btn btn-outline" onclick="switchTab('tracking-section')">
+                                <i class="fa-solid fa-route"></i> Plan Route
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-graphic">
+                        <i class="fa-solid fa-microchip ai-glow-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Global Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="stat-info">
+                            <h3>Active System</h3>
+                            <p>All CCTV Feeds Online</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3>Average Occupancy</h3>
+                            <p id="avg-occupancy">Calculating...</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple"><i class="fa-solid fa-train"></i></div>
+                        <div class="stat-info">
+                            <h3>Optimal Coach</h3>
+                            <p id="optimal-compartment">Checking...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Welcome Suggestion Module -->
+                <div class="ai-suggestion-box">
+                    <div class="ai-header">
+                        <div class="ai-title">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Smart Metro Assistant Suggestions</span>
+                        </div>
+                        <span class="pulse-indicator"></span>
+                    </div>
+                    <div class="ai-body" id="home-ai-tip">
+                        Analyzing live metro environment...
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: CROWD DENSITY PAGE -->
+            <section id="crowd-section" class="content-section">
+                <div class="section-layout">
+                    <!-- CCTV Cameras Streams -->
+                    <div class="camera-stream-grid">
+                        
+                        <!-- Compartment 1 Card -->
+                        <div class="cam-card">
+                            <div class="cam-header">
+                                <span class="cam-badge"><i class="fa-solid fa-circle"></i> LIVE</span>
+                                <h3>Compartment 1 - CCTV Feed</h3>
+                                <span id="comp1-signal" class="signal-indicator-dot sig-green"></span>
+                            </div>
+                            <div class="cam-video-container">
+                                <!-- MJPEG Stream source from FastAPI -->
+                                <img src="/api/video/Compartment-1" alt="Compartment 1 Live Video Feed" class="live-stream-img">
+                            </div>
+                            <div class="cam-footer">
+                                <div class="cam-metric">
+                                    <span>Detected Crowd</span>
+                                    <h4 id="comp1-count">0 Persons</h4>
+                                </div>
+                                <div class="cam-metric">
+                                    <span>Signal State</span>
+                                    <h4 id="comp1-status" class="txt-green">🟢 SAFE</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Compartment 2 Card -->
+                        <div class="cam-card">
+                            <div class="cam-header">
+                                <span class="cam-badge"><i class="fa-solid fa-circle"></i> LIVE</span>
+                                <h3>Compartment 2 - CCTV Feed</h3>
+                                <span id="comp2-signal" class="signal-indicator-dot sig-blue"></span>
+                            </div>
+                            <div class="cam-video-container">
+                                <img src="/api/video/Compartment-2" alt="Compartment 2 Live Video Feed" class="live-stream-img">
+                            </div>
+                            <div class="cam-footer">
+                                <div class="cam-metric">
+                                    <span>Detected Crowd</span>
+                                    <h4 id="comp2-count">0 Persons</h4>
+                                </div>
+                                <div class="cam-metric">
+                                    <span>Signal State</span>
+                                    <h4 id="comp2-status" class="txt-blue">🔵 MODERATE</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Compartment 3 Card -->
+                        <div class="cam-card">
+                            <div class="cam-header">
+                                <span class="cam-badge"><i class="fa-solid fa-circle"></i> LIVE</span>
+                                <h3>Compartment 3 - CCTV Feed</h3>
+                                <span id="comp3-signal" class="signal-indicator-dot sig-red"></span>
+                            </div>
+                            <div class="cam-video-container">
+                                <img src="/api/video/Compartment-3" alt="Compartment 3 Live Video Feed" class="live-stream-img">
+                            </div>
+                            <div class="cam-footer">
+                                <div class="cam-metric">
+                                    <span>Detected Crowd</span>
+                                    <h4 id="comp3-count">0 Persons</h4>
+                                </div>
+                                <div class="cam-metric">
+                                    <span>Signal State</span>
+                                    <h4 id="comp3-status" class="txt-red">🔴 OVERCROWDED</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Side Analytics / AI Suggester -->
+                    <div class="density-sidebar">
+                        <div class="ai-suggestion-box nested-box">
+                            <div class="ai-header">
+                                <div class="ai-title">
+                                    <i class="fa-solid fa-robot"></i>
+                                    <span>Crowd Boarding Advisor</span>
+                                </div>
+                            </div>
+                            <div class="ai-body" id="crowd-ai-tip">
+                                Loading dynamic boarding advice...
+                            </div>
+                            <div class="ai-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="askAiAboutCrowd()">
+                                    <i class="fa-regular fa-comments"></i> Consult Assistant
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Historical counts / occupancy meter -->
+                        <div class="glass-panel analytics-card">
+                            <h3>Occupancy Distribution</h3>
+                            <div class="progress-bar-group">
+                                <div class="progress-label">
+                                    <span>Compartment 1</span>
+                                    <span id="comp1-percent">20%</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div id="comp1-bar" class="progress-fill fill-green" style="width: 20%;"></div>
+                                </div>
+                            </div>
+                            <div class="progress-bar-group">
+                                <div class="progress-label">
+                                    <span>Compartment 2</span>
+                                    <span id="comp2-percent">40%</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div id="comp2-bar" class="progress-fill fill-blue" style="width: 40%;"></div>
+                                </div>
+                            </div>
+                            <div class="progress-bar-group">
+                                <div class="progress-label">
+                                    <span>Compartment 3</span>
+                                    <span id="comp3-percent">80%</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div id="comp3-bar" class="progress-fill fill-red" style="width: 80%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: LIVE METRO TRACKER PAGE -->
+            <section id="tracking-section" class="content-section">
+                <div class="section-layout layout-two-col">
+                    <!-- Left: Route Form & Info -->
+                    <div class="tracker-form-col">
+                        <div class="glass-panel">
+                            <h3>Journey Planner</h3>
+                            <p class="panel-subtitle">Select route across Hyderabad Metro Lines</p>
+                            
+                            <div class="form-group">
+                                <label for="route-source"><i class="fa-solid fa-circle-dot txt-green"></i> Source Station</label>
+                                <select id="route-source" class="form-control">
+                                    <option value="" disabled selected>Select station</option>
+                                    <optgroup label="🔴 Red Line">
+                                        <option value="Miyapur">Miyapur</option>
+                                        <option value="JNTU College">JNTU College</option>
+                                        <option value="Kukatpally">Kukatpally</option>
+                                        <option value="Ameerpet">Ameerpet (Interchange)</option>
+                                        <option value="Nampally">Nampally</option>
+                                        <option value="MGBS">MGBS (Interchange)</option>
+                                        <option value="L.B. Nagar">L.B. Nagar</option>
+                                    </optgroup>
+                                    <optgroup label="🔵 Blue Line">
+                                        <option value="Raidurg">Raidurg</option>
+                                        <option value="Hitec City">Hitec City</option>
+                                        <option value="Madhapur">Madhapur</option>
+                                        <option value="Ameerpet">Ameerpet (Interchange)</option>
+                                        <option value="JBS Parade Ground">JBS Parade Ground (Interchange)</option>
+                                        <option value="Nagole">Nagole</option>
+                                    </optgroup>
+                                    <optgroup label="🟢 Green Line">
+                                        <option value="JBS Parade Ground">JBS Parade Ground (Interchange)</option>
+                                        <option value="RTC X Roads">RTC X Roads</option>
+                                        <option value="MGBS">MGBS (Interchange)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="route-dest"><i class="fa-solid fa-location-dot txt-red"></i> Destination Station</label>
+                                <select id="route-dest" class="form-control">
+                                    <option value="" disabled selected>Select station</option>
+                                    <optgroup label="🔴 Red Line">
+                                        <option value="Miyapur">Miyapur</option>
+                                        <option value="JNTU College">JNTU College</option>
+                                        <option value="Kukatpally">Kukatpally</option>
+                                        <option value="Ameerpet">Ameerpet (Interchange)</option>
+                                        <option value="Nampally">Nampally</option>
+                                        <option value="MGBS">MGBS (Interchange)</option>
+                                        <option value="L.B. Nagar">L.B. Nagar</option>
+                                    </optgroup>
+                                    <optgroup label="🔵 Blue Line">
+                                        <option value="Raidurg">Raidurg</option>
+                                        <option value="Hitec City">Hitec City</option>
+                                        <option value="Madhapur">Madhapur</option>
+                                        <option value="Ameerpet">Ameerpet (Interchange)</option>
+                                        <option value="JBS Parade Ground">JBS Parade Ground (Interchange)</option>
+                                        <option value="Nagole">Nagole</option>
+                                    </optgroup>
+                                    <optgroup label="🟢 Green Line">
+                                        <option value="JBS Parade Ground">JBS Parade Ground (Interchange)</option>
+                                        <option value="RTC X Roads">RTC X Roads</option>
+                                        <option value="MGBS">MGBS (Interchange)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <button id="start-tracking-btn" class="btn btn-primary btn-block">
+                                <i class="fa-solid fa-circle-play"></i> Start Live Simulation
+                            </button>
+                        </div>
+
+                        <!-- Simulation Stats (Hidden initially) -->
+                        <div id="sim-stats-panel" class="glass-panel sim-panel" style="display: none;">
+                            <div class="sim-header">
+                                <span class="badge badge-pulse">LIVE TRACKING</span>
+                                <button id="cancel-tracking-btn" class="close-sim-btn" title="Stop Simulation">
+                                    <i class="fa-solid fa-square-xmark"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="sim-metric-row">
+                                <div class="metric-cell">
+                                    <span>Current Station</span>
+                                    <h4 id="sim-current-station">-</h4>
+                                </div>
+                                <div class="metric-cell">
+                                    <span>Next Station</span>
+                                    <h4 id="sim-next-station">-</h4>
+                                </div>
+                            </div>
+                            
+                            <div class="sim-metric-row">
+                                <div class="metric-cell">
+                                    <span>ETA</span>
+                                    <h4 id="sim-eta">-</h4>
+                                </div>
+                                <div class="metric-cell">
+                                    <span>Remaining Stations</span>
+                                    <h4 id="sim-remaining">-</h4>
+                                </div>
+                            </div>
+
+                            <div class="sim-progress-indicator">
+                                <div class="sim-line-tracker">
+                                    <div id="sim-line-fill" class="sim-line-fill" style="width: 0%;"></div>
+                                    <div id="sim-train-node" class="sim-train-node" style="left: 0%;">
+                                        <i class="fa-solid fa-train"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Suggestion Bubble -->
+                        <div class="ai-suggestion-box nested-box">
+                            <div class="ai-header">
+                                <div class="ai-title">
+                                    <i class="fa-solid fa-compass"></i>
+                                    <span>Transit Routing Advisor</span>
+                                </div>
+                            </div>
+                            <div class="ai-body" id="tracker-ai-tip">
+                                Choose source and destination to compute route suggestions...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Map Graphics -->
+                    <div class="tracker-map-col">
+                        <div class="glass-panel map-container-panel">
+                            <div class="map-header">
+                                <h3>Hyderabad Metro Interactive Map</h3>
+                                <div class="map-legend">
+                                    <span class="legend-item"><span class="legend-color red-line"></span> Red Line</span>
+                                    <span class="legend-item"><span class="legend-color blue-line"></span> Blue Line</span>
+                                    <span class="legend-item"><span class="legend-color green-line"></span> Green Line</span>
+                                </div>
+                            </div>
+                            <div class="svg-map-wrapper">
+                                <!-- Interactive SVG Vector Map of Hyderabad Metro -->
+                                <svg id="metro-svg-map" viewBox="0 0 600 500" class="metro-svg">
+                                    <defs>
+                                        <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feGaussianBlur stdDeviation="3" result="blur" />
+                                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                        </filter>
+                                        <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feGaussianBlur stdDeviation="3" result="blur" />
+                                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                        </filter>
+                                        <filter id="glow-green" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feGaussianBlur stdDeviation="3" result="blur" />
+                                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                        </filter>
+                                    </defs>
+
+                                    <!-- Connecting Lines (Paths) -->
+                                    <!-- Red Line (Miyapur to LB Nagar) -->
+                                    <path d="M 50,70 L 150,150 L 250,220 L 350,280 L 450,350 L 550,420" 
+                                          class="map-path-bg red-path" />
+                                    
+                                    <!-- Blue Line (Raidurg to Nagole) -->
+                                    <path d="M 50,280 L 150,250 L 250,220 L 350,150 L 450,100 L 550,80" 
+                                          class="map-path-bg blue-path" />
+                                          
+                                    <!-- Green Line (JBS to MGBS) -->
+                                    <path d="M 350,150 L 350,280" 
+                                          class="map-path-bg green-path" />
+
+                                    <!-- Active highlight path overlays -->
+                                    <path id="active-red-path" d="M 50,70 L 150,150 L 250,220 L 350,280 L 450,350 L 550,420" class="active-path-overlay red-active" style="stroke-dasharray: 1000; stroke-dashoffset: 1000; display: none;" />
+                                    <path id="active-blue-path" d="M 50,280 L 150,250 L 250,220 L 350,150 L 450,100 L 550,80" class="active-path-overlay blue-active" style="stroke-dasharray: 1000; stroke-dashoffset: 1000; display: none;" />
+                                    <path id="active-green-path" d="M 350,150 L 350,280" class="active-path-overlay green-active" style="stroke-dasharray: 1000; stroke-dashoffset: 1000; display: none;" />
+
+                                    <!-- Station Nodes (Circles) -->
+                                    <!-- RED LINE -->
+                                    <circle cx="50" cy="70" r="6" class="station-node node-red" data-station="Miyapur" />
+                                    <text x="40" y="55" class="station-label">Miyapur</text>
+                                    
+                                    <circle cx="150" cy="150" r="6" class="station-node node-red" data-station="Kukatpally" />
+                                    <text x="162" y="154" class="station-label">Kukatpally</text>
+                                    
+                                    <!-- Interchange: Ameerpet -->
+                                    <circle cx="250" cy="220" r="8" class="station-node node-interchange" data-station="Ameerpet" />
+                                    <text x="262" y="224" class="station-label label-bold">Ameerpet (Int)</text>
+
+                                    <!-- Interchange: MGBS -->
+                                    <circle cx="350" cy="280" r="8" class="station-node node-interchange" data-station="MGBS" />
+                                    <text x="362" y="284" class="station-label label-bold">MGBS (Int)</text>
+                                    
+                                    <circle cx="450" cy="350" r="6" class="station-node node-red" data-station="Malakpet" />
+                                    <text x="462" y="354" class="station-label">Malakpet</text>
+                                    
+                                    <circle cx="550" cy="420" r="6" class="station-node node-red" data-station="L.B. Nagar" />
+                                    <text x="500" y="440" class="station-label">L.B. Nagar</text>
+
+                                    <!-- BLUE LINE -->
+                                    <circle cx="50" cy="280" r="6" class="station-node node-blue" data-station="Raidurg" />
+                                    <text x="25" y="300" class="station-label">Raidurg</text>
+                                    
+                                    <circle cx="150" cy="250" r="6" class="station-node node-blue" data-station="Hitec City" />
+                                    <text x="155" y="240" class="station-label">Hitec City</text>
+                                    
+                                    <circle cx="350" cy="150" r="8" class="station-node node-interchange" data-station="JBS Parade Ground" />
+                                    <text x="362" y="145" class="station-label label-bold">JBS Parade (Int)</text>
+                                    
+                                    <circle cx="450" cy="100" r="6" class="station-node node-blue" data-station="Tarnaka" />
+                                    <text x="455" y="90" class="station-label">Tarnaka</text>
+                                    
+                                    <circle cx="550" cy="80" r="6" class="station-node node-blue" data-station="Nagole" />
+                                    <text x="535" y="70" class="station-label">Nagole</text>
+
+                                    <!-- GREEN LINE -->
+                                    <circle cx="350" cy="215" r="6" class="station-node node-green" data-station="RTC X Roads" />
+                                    <text x="270" y="215" class="station-label">RTC X Roads</text>
+                                    
+                                    <!-- Interactive Moving Train Indicator -->
+                                    <circle id="map-train-indicator" cx="0" cy="0" r="8" class="map-train-marker" style="display: none;" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: BOOK TICKET & GATE SCANNER PAGE -->
+            <section id="booking-section" class="content-section">
+                <!-- AUTH REQUIREMENT BLOCKER (Toggled via JS) -->
+                <div id="auth-blocker" class="auth-card-overlay">
+                    <div class="glass-panel auth-panel">
+                        <div class="auth-header">
+                            <i class="fa-solid fa-lock auth-lock-icon"></i>
+                            <h3>Login Authenticator Required</h3>
+                            <p>Please log in to your metro account to book ticket online</p>
+                        </div>
+                        <form id="login-form" class="auth-form">
+                            <div class="form-group">
+                                <label for="auth-username"><i class="fa-solid fa-envelope"></i> Username / Email</label>
+                                <input type="text" id="auth-username" class="form-control" placeholder="Enter username (e.g. metro_user)" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="auth-password"><i class="fa-solid fa-key"></i> Password</label>
+                                <input type="password" id="auth-password" class="form-control" placeholder="Enter password (e.g. metro_pass)" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fa-solid fa-right-to-bracket"></i> Login Account
+                            </button>
+                        </form>
+                        <div class="demo-creds">
+                            <span>🔑 Demo Credentials:</span>
+                            <code>User: metro_user | Pass: metro_pass</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOOKING WORKSPACE (Hidden if unauthorized) -->
+                <div id="booking-workspace" style="display: none;">
+                    <div class="section-layout layout-two-col">
+                        <!-- Left: Ticket Booking Form -->
+                        <div class="booking-form-col">
+                            <div class="glass-panel">
+                                <h3>Online Ticket Generator</h3>
+                                <p class="panel-subtitle">Book dynamic smart metro ticket instantly</p>
+                                
+                                <form id="ticket-booking-form">
+                                    <div class="form-group-row">
+                                        <div class="form-group">
+                                            <label for="book-source">Source</label>
+                                            <select id="book-source" class="form-control" required></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="book-dest">Destination</label>
+                                            <select id="book-dest" class="form-control" required></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group-row">
+                                        <div class="form-group">
+                                            <label for="book-passengers">Passengers</label>
+                                            <input type="number" id="book-passengers" class="form-control" min="1" max="5" value="1" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="book-compartment">Coach Choice</label>
+                                            <select id="book-compartment" class="form-control" required>
+                                                <option value="Compartment-1">Compartment 1 (Safe)</option>
+                                                <option value="Compartment-2">Compartment 2 (Moderate)</option>
+                                                <option value="Compartment-3">Compartment 3 (Crowded)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="fare-display-card">
+                                        <div class="fare-header">Calculated Metro Fare</div>
+                                        <div class="fare-amount" id="calculated-fare">₹10</div>
+                                        <div class="fare-disclaimer">Based on station distance. Includes platform charges.</div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <i class="fa-solid fa-credit-card"></i> Pay & Book Ticket
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Booking AI Suggestions -->
+                            <div class="ai-suggestion-box nested-box">
+                                <div class="ai-header">
+                                    <div class="ai-title">
+                                        <i class="fa-solid fa-ticket"></i>
+                                        <span>AI Seat & Coach Suggestion</span>
+                                    </div>
+                                </div>
+                                <div class="ai-body" id="booking-ai-tip">
+                                    Select boarding variables to receive coach allocations...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Digital Ticket & Scanner -->
+                        <div class="scanner-col">
+                            
+                            <!-- Digital Ticket Display (Visible after booking) -->
+                            <div id="digital-ticket-container" class="glass-panel ticket-outer" style="display: none;">
+                                <h3>Your Active Ticket</h3>
+                                <div class="ticket-badge">VALID TICKET</div>
+                                
+                                <div class="ticket-card">
+                                    <div class="ticket-card-header">
+                                        <div class="ticket-logo">
+                                            <i class="fa-solid fa-train-subway"></i>
+                                            <span>HYDERABAD METRO</span>
+                                        </div>
+                                        <div class="ticket-id-lbl" id="ticket-card-id">HYD-12345-MIA</div>
+                                    </div>
+                                    <div class="ticket-card-body">
+                                        <div class="ticket-route-display">
+                                            <div class="route-point">
+                                                <span class="route-city" id="ticket-card-source">Miyapur</span>
+                                                <span class="route-time">Origin</span>
+                                            </div>
+                                            <div class="route-arrow">
+                                                <i class="fa-solid fa-arrow-right-long"></i>
+                                            </div>
+                                            <div class="route-point">
+                                                <span class="route-city" id="ticket-card-dest">Ameerpet</span>
+                                                <span class="route-time">Destination</span>
+                                            </div>
+                                        </div>
+                                        <div class="ticket-details-grid">
+                                            <div class="detail-item">
+                                                <span>COACH</span>
+                                                <strong id="ticket-card-coach">Compartment 1</strong>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span>QTY</span>
+                                                <strong id="ticket-card-qty">1 Pax</strong>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span>FARE</span>
+                                                <strong id="ticket-card-fare">₹25</strong>
+                                            </div>
+                                        </div>
+                                        <div class="ticket-qr-space">
+                                            <!-- Simple QR Code canvas or image container -->
+                                            <div id="ticket-qr-code" class="qr-code-placeholder">
+                                                <i class="fa-solid fa-qrcode qr-icon-loading"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ticket-card-footer">
+                                        <span>Scan QR Code at the entry gates</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Turnstile Entry Scanner -->
+                            <div id="gate-scanner-container" class="glass-panel gate-scanner-panel" style="display: none;">
+                                <h3>Platform Entry Gate Simulator</h3>
+                                <p class="panel-subtitle">Hold and scan your digital QR ticket below</p>
+                                
+                                <div class="turnstile-wrapper">
+                                    <!-- Indicator Light -->
+                                    <div class="scanner-indicator">
+                                        <span id="gate-light" class="indicator-light light-red"></span>
+                                        <span id="gate-message" class="indicator-text">LOCKED</span>
+                                    </div>
+
+                                    <!-- Gate Scanner Bed -->
+                                    <div id="scanner-bed" class="scanner-bed">
+                                        <div class="scanner-glass">
+                                            <div class="laser-beam"></div>
+                                            <i class="fa-solid fa-qrcode scanner-grid-icon"></i>
+                                        </div>
+                                        <div class="scan-button-layer">
+                                            <button id="trigger-scan-btn" class="btn btn-secondary btn-sm">
+                                                <i class="fa-solid fa-barcode"></i> Scan Ticket QR
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sliding Gates -->
+                                    <div class="barrier-doors">
+                                        <div id="gate-left-door" class="gate-door door-left"></div>
+                                        <div id="gate-right-door" class="gate-door door-right"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Persistent Floating Chatbot Panel Toggle -->
+        <button id="chat-fab" class="chat-fab-btn" title="Ask AI Assistant">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span class="chat-badge-pulse"></span>
+        </button>
+
+        <!-- Slide-out Global Chat Assistant Panel -->
+        <div id="chat-panel" class="chat-panel">
+            <div class="chat-panel-header">
+                <div class="chat-bot-info">
+                    <i class="fa-solid fa-robot chat-bot-icon"></i>
+                    <div>
+                        <h3>Metro AI Concierge</h3>
+                        <span>Always Active</span>
+                    </div>
+                </div>
+                <button id="close-chat" class="close-chat-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div id="chat-messages" class="chat-messages">
+                <div class="message msg-bot">
+                    Hello! I am your AI Metro Helper. Ask me any question about the crowd levels, route planning, seat layouts, or ticketing, and I'll assist you immediately!
+                </div>
+            </div>
+            
+            <div class="chat-panel-footer">
+                <input type="text" id="chat-input" placeholder="Type message..." class="chat-input">
+                <button id="send-chat-btn" class="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <!-- Settings Modal (API Keys etc) -->
+        <div id="settings-modal" class="modal-overlay">
+            <div class="glass-panel modal-card">
+                <div class="modal-header">
+                    <h3>Application Settings</h3>
+                    <button class="close-modal" onclick="closeSettings()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="settings-gemini-key">Google Gemini API Key (Optional)</label>
+                        <input type="password" id="settings-gemini-key" class="form-control" placeholder="AI key for advanced reasoning">
+                        <p class="form-help">Enter your custom API Key to run advanced chatbot models. Key is saved locally in your browser.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="saveSettings()">Save & Close</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- QR Code Generator Library (CDN Backup) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
